@@ -1,7 +1,17 @@
 package datastructures.graphs;
 
 import datastructures.lists.IList;
+import datastructures.sets.ChainedHashSet;
 import datastructures.sets.ISet;
+import datastructures.dictionaries.IDictionary;
+import datastructures.dictionaries.ChainedHashDictionary;
+import datastructures.lists.DoubleLinkedList;
+import datastructures.disjointsets.ArrayDisjointSets;
+import datastructures.disjointsets.IDisjointSets;
+import datastructures.priorityqueues.ArrayHeapPriorityQueue;
+import datastructures.priorityqueues.IPriorityQueue;
+import datastructures.dictionaries.KVPair;
+
 import misc.exceptions.NotYetImplementedException;
 
 /**
@@ -26,21 +36,22 @@ public class Graph<V, E> {
     contained within this file. Our testing infrastructure works by copying specific files from your
     project to ours, and if you add new files, they won't be copied and your code will not compile.
     */
-
+    IDictionary<V, IList<Edge<V, E>>> graph;
+    int numEdges;
     /**
      * Constructs a new empty graph.
      */
     public Graph() {
-        // TODO: Your code here
-        throw new NotYetImplementedException();
+        this.graph = new ChainedHashDictionary<>();
     }
 
     /**
      * Adds a vertex to this graph. If the vertex is already in the graph, does nothing.
      */
     public void addVertex(V vertex) {
-        // TODO: Your code here
-        throw new NotYetImplementedException();
+        if (!this.graph.containsKey(vertex)) {
+            this.graph.put(vertex, new DoubleLinkedList<>());
+        }
     }
 
     /**
@@ -50,7 +61,7 @@ public class Graph<V, E> {
      * another edge between the same vertices and with the same weight and data already exists, a
      * new edge will be created and added (where `newEdge.equals(oldEdge)` is false).
      *
-     * @throws IllegalArgumentException  if `weight` is null
+     * @throws IllegalArgumentException  if `weight` is negative
      * @throws IllegalArgumentException  if either vertex is not contained in the graph
      */
     public void addEdge(V vertex1, V vertex2, double weight) {
@@ -64,28 +75,31 @@ public class Graph<V, E> {
      * another edge between the same vertices and with the same weight and data already exists, a
      * new edge will be created and added (where `newEdge.equals(oldEdge)` is false).
      *
-     * @throws IllegalArgumentException  if `weight` is null
+     * @throws IllegalArgumentException  if `weight` is negative
      * @throws IllegalArgumentException  if either vertex is not contained in the graph
      */
     public void addEdge(V vertex1, V vertex2, double weight, E data) {
-        // TODO: Your code here
-        throw new NotYetImplementedException();
+        if (weight < 0 || !this.graph.containsKey(vertex1) || !this.graph.containsKey(vertex2)) {
+            throw new IllegalArgumentException();
+        }
+        Edge<V, E> edge = new Edge<V, E>(vertex1, vertex2, weight, data);
+        this.graph.get(vertex1).add(edge);
+        this.graph.get(vertex2).add(edge);
+        this.numEdges++;
     }
 
     /**
      * Returns the number of vertices contained within this graph.
      */
     public int numVertices() {
-        // TODO: your code here
-        throw new NotYetImplementedException();
+        return this.graph.size();
     }
 
     /**
      * Returns the number of edges contained within this graph.
      */
     public int numEdges() {
-        // TODO: your code here
-        throw new NotYetImplementedException();
+        return this.numEdges;
     }
 
     /**
@@ -96,8 +110,27 @@ public class Graph<V, E> {
      * Precondition: the graph does not contain any unconnected components.
      */
     public ISet<Edge<V, E>> findMinimumSpanningTree() {
-        // TODO: your code here
-        throw new NotYetImplementedException();
+        ISet<Edge<V, E>> mst = new ChainedHashSet<>();
+        IDisjointSets<V> vertices = new ArrayDisjointSets<>();
+        IPriorityQueue<Edge<V, E>> edges = new ArrayHeapPriorityQueue<>();
+        for (KVPair<V, IList<Edge<V, E>>> item : this.graph) {
+            for (Edge<V, E> edge: item.getValue()) {
+                if (!edges.contains(edge)) {
+                    edges.add(edge);
+                }
+            }
+            vertices.makeSet(item.getKey());
+        }
+        while (!edges.isEmpty()) {
+            Edge<V, E> edge = edges.removeMin();
+            V u = edge.getVertex1();
+            V v = edge.getVertex2();
+            if (vertices.findSet(u) != vertices.findSet(v)) {
+                mst.add(edge);
+                vertices.union(u, v);
+            }
+        }
+        return mst;
     }
 
     /**
@@ -112,7 +145,39 @@ public class Graph<V, E> {
      * @throws IllegalArgumentException if `start` or `end` is null or not in the graph
      */
     public IList<Edge<V, E>> findShortestPathBetween(V start, V end) {
-        // TODO: your code here
+        // if (start == null || !this.graph.containsKey(start) ||
+        //         end == null || !this.graph.containsKey(end)) {
+        //     throw new IllegalArgumentException();
+        // }
+        // IPriorityQueue<Vertex<V, E>> mpq = new ArrayHeapPriorityQueue<>();
+        // mpq.add(new Vertex<>(start, 0));
+        // while(!mpq.isEmpty());
+        //     Vertex<V, E> u = mpq.removeMin();
+        //     for(KVPair<V, Edge<V, E>> item : u.) {
+        //
+        //     }
+        //
         throw new NotYetImplementedException();
     }
+
+    // private static class Vertex<V, E>
+    //         implements Comparable<Vertex<V, E>> {
+    //     private V vertex;
+    //     private final double distance;
+    //     private final Vertex<V, E> predecessor;
+    //     private final boolean processed;
+    //
+    //     public Vertex(V vertex, double distance) {
+    //         this.vertex = vertex;
+    //         this.distance = distance;
+    //         this.predecessor = null;
+    //         this.processed = false;
+    //     }
+    //
+    //     public int compareTo() {
+    //         return
+    //         // Define compareTo to determine how your vertices will
+    //         // be ordered in the `IPriorityQueue`
+    //     }
+    // }
 }
