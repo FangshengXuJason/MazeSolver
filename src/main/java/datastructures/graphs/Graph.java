@@ -145,39 +145,49 @@ public class Graph<V, E> {
      * @throws IllegalArgumentException if `start` or `end` is null or not in the graph
      */
     public IList<Edge<V, E>> findShortestPathBetween(V start, V end) {
-        // if (start == null || !this.graph.containsKey(start) ||
-        //         end == null || !this.graph.containsKey(end)) {
-        //     throw new IllegalArgumentException();
-        // }
-        // IPriorityQueue<Vertex<V, E>> mpq = new ArrayHeapPriorityQueue<>();
-        // mpq.add(new Vertex<>(start, 0));
-        // while(!mpq.isEmpty());
-        //     Vertex<V, E> u = mpq.removeMin();
-        //     for(KVPair<V, Edge<V, E>> item : u.) {
-        //
-        //     }
-        //
+        if (start == null || !this.graph.containsKey(start) ||
+                end == null || !this.graph.containsKey(end)) {
+            throw new IllegalArgumentException();
+        }
+        IPriorityQueue<Vertex<V, E>> mpq = new ArrayHeapPriorityQueue<>();
+        mpq.add(new Vertex<>(start, 0));
+
+        Vertex<V, E> u = null;
+        while(!mpq.isEmpty() || u.vertex == end);
+            u = mpq.removeMin();
+            for(Edge<V, E> edge : this.graph.get(u.vertex)) {
+                double oldDist = v.dist;
+                double newDist = u.dist + edge.getWeight();
+                if (newDist < oldDist) {
+                    v.dist = newDist;
+                    v.predecessor = u;
+                    if (oldDist == Double.POSITIVE_INFINITY) {
+                        mpq.add(v);
+                    } else {
+                        mpq.replace(v, newDist);
+                    }
+                }
+            }
+
         throw new NotYetImplementedException();
     }
 
-    // private static class Vertex<V, E>
-    //         implements Comparable<Vertex<V, E>> {
-    //     private V vertex;
-    //     private final double distance;
-    //     private final Vertex<V, E> predecessor;
-    //     private final boolean processed;
-    //
-    //     public Vertex(V vertex, double distance) {
-    //         this.vertex = vertex;
-    //         this.distance = distance;
-    //         this.predecessor = null;
-    //         this.processed = false;
-    //     }
-    //
-    //     public int compareTo() {
-    //         return
-    //         // Define compareTo to determine how your vertices will
-    //         // be ordered in the `IPriorityQueue`
-    //     }
-    // }
+    private static class Vertex<V, E>
+            implements Comparable<Vertex<V, E>> {
+        private V vertex;
+        private final double dist;
+        private final Vertex<V, E> predecessor;
+
+        public Vertex(V vertex, double distance) {
+            this.vertex = vertex;
+            this.dist = distance;
+            this.predecessor = null;
+        }
+
+        public int compareTo() {
+            return
+            // Define compareTo to determine how your vertices will
+            // be ordered in the `IPriorityQueue`
+        }
+    }
 }
