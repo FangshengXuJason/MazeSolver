@@ -1,11 +1,13 @@
 package mazes.generators.carvers;
 
+import datastructures.graphs.Edge;
 import datastructures.graphs.Graph;
+import datastructures.sets.ChainedHashSet;
+
 import datastructures.sets.ISet;
 import mazes.entities.Maze;
 import mazes.entities.Room;
 import mazes.entities.Wall;
-import misc.exceptions.NotYetImplementedException;
 
 import java.util.Random;
 
@@ -33,8 +35,18 @@ public class KruskalMazeCarver implements MazeCarver {
     public ISet<Wall> returnWallsToRemove(Maze maze) {
         Random rand = new Random();
         Graph<Room, Wall> graph = makeGraph();
-
-        // TODO: your code here
-        throw new NotYetImplementedException();
+        ISet<Wall> toRemove = new ChainedHashSet<>();
+        for (Room room : maze.getRooms()) {
+            graph.addVertex(room);
+        }
+        for (Wall wall : maze.getRemovableWalls()) {
+            // store wall as edge data
+           graph.addEdge(wall.getRoom1(), wall.getRoom2(), rand.nextDouble(), wall); // random wall for random mst
+        }
+        ISet<Edge<Room, Wall>> validMaze = graph.findMinimumSpanningTree();
+        for (Edge<Room, Wall> edge : validMaze) {
+            toRemove.add(edge.getData());
+        }
+        return toRemove;
     }
 }

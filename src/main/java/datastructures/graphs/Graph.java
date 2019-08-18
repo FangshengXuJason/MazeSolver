@@ -219,14 +219,3 @@ public class Graph<V, E> {
         }
     }
 }
-
-
-            // if (this.vertex.equals(other.vertex) &&
-            //         (this.dist == other.dist) &&
-            //         this.predecessor.equals(other.predecessor) &&
-            //         this.shortestEdge.equals(other.shortestEdge)) {
-            //         return 0;
-            //         } else {
-            //         return 1;
-            //         }
-
