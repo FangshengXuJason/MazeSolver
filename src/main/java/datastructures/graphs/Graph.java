@@ -201,7 +201,7 @@ public class Graph<V, E> {
         private final Vertex<V, E> predecessor;
         private final Edge<V, E> shortestEdge;
 
-        public Vertex(V vertex, double distance, Vertex<V, E> predecessor, Edge<V,E> shortestEdge) {
+        public Vertex(V vertex, double distance, Vertex<V, E> predecessor, Edge<V, E> shortestEdge) {
             this.vertex = vertex;
             this.dist = distance;
             this.predecessor = predecessor;
