@@ -54,7 +54,7 @@ public class ArrayDisjointSets<T> implements IDisjointSets<T> {
     @Override
     public int findSet(T item) {
         int index = dic.get(item); //map the item to its index of pointers
-        while (index != -1){ //not a parent
+        if (index != -1){ //not a parent
 
             return pointers[index];
         }
