@@ -39,8 +39,7 @@ public class KruskalMazeCarver implements MazeCarver {
         for (Room room : maze.getRooms()) {
             graph.addVertex(room);
         }
-        for (Wall wall : maze.getRemovableWalls()) {
-            // store wall as edge data
+        for (Wall wall : maze.getRemovableWalls()) { // store wall as edge data
            graph.addEdge(wall.getRoom1(), wall.getRoom2(), rand.nextDouble(), wall); // random wall for random mst
         }
         ISet<Edge<Room, Wall>> validMaze = graph.findMinimumSpanningTree();
