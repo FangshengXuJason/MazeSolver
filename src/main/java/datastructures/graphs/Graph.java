@@ -12,8 +12,6 @@ import datastructures.priorityqueues.ArrayHeapPriorityQueue;
 import datastructures.priorityqueues.IPriorityQueue;
 import datastructures.dictionaries.KVPair;
 
-import misc.exceptions.NotYetImplementedException;
-
 /**
  * Represents an undirected, weighted graph, possibly containing self-loops, parallel edges,
  * and unconnected components.
@@ -149,45 +147,86 @@ public class Graph<V, E> {
                 end == null || !this.graph.containsKey(end)) {
             throw new IllegalArgumentException();
         }
+        IList<Edge<V, E>> shortestPath = new DoubleLinkedList<>();
+        if (start == end) {
+            return shortestPath;
+        }
+        IDictionary<V, Vertex<V, E>> vDict = new ChainedHashDictionary<>();
         IPriorityQueue<Vertex<V, E>> mpq = new ArrayHeapPriorityQueue<>();
-        mpq.add(new Vertex<>(start, 0));
-
-        Vertex<V, E> u = null;
-        while(!mpq.isEmpty() || u.vertex == end);
+        // add start vertex
+        Vertex<V, E> u = new Vertex<V, E>(start, 0, null, null);
+        mpq.add(u);
+        vDict.put(start, u);
+        // add rest of the vertices
+        for (KVPair<V, IList<Edge<V, E>>> item : this.graph) {
+            V vertex = item.getKey();
+            if (vertex != start) {
+                Vertex<V, E> v = new Vertex<V, E>(vertex, Double.POSITIVE_INFINITY, null, null);
+                mpq.add(v);
+                vDict.put(vertex, v);
+            }
+        }
+        while (!mpq.isEmpty() && u.vertex != end) {
             u = mpq.removeMin();
-            for(Edge<V, E> edge : this.graph.get(u.vertex)) {
-                double oldDist = v.dist;
-                double newDist = u.dist + edge.getWeight();
-                if (newDist < oldDist) {
-                    v.dist = newDist;
-                    v.predecessor = u;
-                    if (oldDist == Double.POSITIVE_INFINITY) {
-                        mpq.add(v);
-                    } else {
-                        mpq.replace(v, newDist);
+            for (Edge<V, E> edge : this.graph.get(u.vertex)) { // exit if end vertex is processed
+                V otherVertex  = edge.getOtherVertex(u.vertex);
+                Vertex<V, E> v = vDict.get(otherVertex);
+                if (mpq.contains(v)) {
+                    double oldDist = v.dist;
+                    double newDist = u.dist + edge.getWeight();
+                    if (newDist < oldDist) {
+                        Vertex<V, E> newV = new Vertex<V, E>(otherVertex, newDist, u, edge);
+                        vDict.put(otherVertex, newV); // update dictionary with new Vertex obj
+                        mpq.replace(v, newV); // update mpq with updated dist and predecessor
                     }
                 }
             }
-
-        throw new NotYetImplementedException();
+        }
+        if (vDict.get(end).predecessor == null) { // if end vertex is not found
+            throw new NoPathExistsException();
+        }
+        V prev = end;
+        // store the predecessor from the end vertex until the start vertex is found (in reverse order)
+        while (prev != start) {
+            shortestPath.insert(0, vDict.get(prev).shortestEdge);
+            prev = vDict.get(prev).predecessor.vertex;
+        }
+        return shortestPath;
     }
 
     private static class Vertex<V, E>
             implements Comparable<Vertex<V, E>> {
-        private V vertex;
+        private final V vertex;
         private final double dist;
         private final Vertex<V, E> predecessor;
+        private final Edge<V, E> shortestEdge;
 
-        public Vertex(V vertex, double distance) {
+        public Vertex(V vertex, double distance, Vertex<V, E> predecessor, Edge<V,E> shortestEdge) {
             this.vertex = vertex;
             this.dist = distance;
-            this.predecessor = null;
+            this.predecessor = predecessor;
+            this.shortestEdge = shortestEdge;
         }
 
-        public int compareTo() {
-            return
-            // Define compareTo to determine how your vertices will
-            // be ordered in the `IPriorityQueue`
+        public int compareTo(Vertex<V, E> other) {
+            double diff = this.dist - other.dist;
+            if (diff >= 0) {
+                return 1;
+            }
+            else { // diff < 0
+                return 0;
+            }
         }
     }
 }
+
+
+            // if (this.vertex.equals(other.vertex) &&
+            //         (this.dist == other.dist) &&
+            //         this.predecessor.equals(other.predecessor) &&
+            //         this.shortestEdge.equals(other.shortestEdge)) {
+            //         return 0;
+            //         } else {
+            //         return 1;
+            //         }
+
