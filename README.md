@@ -1,3 +1,4 @@
-# CSE 373 Project 4
+# CSE 373 Project 4 By Fangsheng Xu and Seungjae (Brian) Moon
 
-Please see the assignment page on the course website for instructions on this assignment.
+Brian's LinkedIn Page: https://www.linkedin.com/in/sjaemoon/
+
