@@ -17,6 +17,6 @@ Brian's LinkedIn Page: https://www.linkedin.com/in/sjaemoon/
   
   ps: you can try out different "base maze shape" ;)
    This is a student project from https://courses.cs.washington.edu/courses/cse373/
-
+   Project implemented and tested on IntelliJ IDE 
 
 
