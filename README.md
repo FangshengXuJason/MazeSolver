@@ -15,8 +15,10 @@ Brian's LinkedIn Page: https://www.linkedin.com/in/sjaemoon/
 3. If there is a possible path -> our bot finds it
    If no path -> generate a new maze again -> step 1
   
-  ps: you can try out different "base maze shape" ;)
+  ps: you can try out different "base maze shape" 
+  
    This is a student project from https://courses.cs.washington.edu/courses/cse373/
+   
    Project implemented and tested on IntelliJ IDE 
 
 
