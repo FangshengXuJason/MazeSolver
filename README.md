@@ -16,7 +16,7 @@ Brian's LinkedIn Page: https://www.linkedin.com/in/sjaemoon/
    If no path -> generate a new maze again -> step 1
   
   ps: you can try out different "base maze shape" ;)
-
+   This is a student project from https://courses.cs.washington.edu/courses/cse373/
 
 
 
