@@ -12,7 +12,7 @@ Brian's LinkedIn Page: https://www.linkedin.com/in/sjaemoon/
 ##### Configure the GUI and play with it
 1. Generate new maze: just don't chose "do not delete any edges" since it give you impossible maze to solve
 2. Hit "find shortest path"
-3. If there is a possible path -> our bot finds it
+3. If there is a possible path -> our bot finds it;
    If no path -> generate a new maze again -> step 1
   
   ps: you can try out different "base maze shape" 
